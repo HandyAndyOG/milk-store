@@ -1,12 +1,12 @@
 import express from 'express';
 import { Request, Response, Application } from 'express';
-import fetch from 'isomorphic-fetch';
+const MongoClient = require('mongodb').MongoClient;
 import * as dotenv from 'dotenv'
 dotenv.config();
 const app: Application = express();
 const bp = require('body-parser')
 
-const uri = process.env.FETCH_URL || 'https://run.mocky.io/v3/9118e647-e131-43c7-8668-d99af1abb5a6'
+const uri = `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@cluster0.cgvcn5o.mongodb.net/${process.env.DB_NAME}`;
 
 app.use(bp.json())
 app.use(bp.urlencoded({ extended: true }))
@@ -19,20 +19,38 @@ app.use(function(_, res: Response, next) {
 });
 
 // interface Data {
-//   team: string[]
+//   _id: string;
+//   count: number;
+//   results: string[];
 // }
-// let dataSet: Data;
 
-// app.get('/api/', async (_, res: Response) => {
-//   try {
-//     const apiData = await fetch(uri)
-//     const response = await apiData.json()
-//     dataSet = response
-//     res.status(200).json(response)
-//   } catch (err) {
-//   res.status(404).send('Error fetching data from api')
-//   }
-// });
+
+MongoClient.connect(uri, { useUnifiedTopology: true }, (err: string, client: any) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const db = client.db(process.env.DB_NAME);
+  app.get('/api/:page', async (req: Request, res: Response) => {
+    if (req.params.page) {
+      let startOfArray;
+      if(Number(req.params.page) === 1) {
+        startOfArray = (Number(req.params.page) * 10) - 9
+      } else {
+        startOfArray = (Number(req.params.page) * 10) - 9
+      }
+        try {
+          console.log(startOfArray)
+          const data = await db.collection(process.env.COLLECTION_NAME).find({}).project({results: { $slice: [startOfArray-Number(req.params.page) , 9] }}).toArray()
+          console.log(data)
+          return res.status(200).send(data)
+        } catch (err) {
+          return res.status(404).send('Error fetching the data')
+        }
+    }
+    return res.status(404).send('Error fetching the page')
+  });
+});
 
 // app.post('/api/', async(req: Request, res: Response) => {
 
