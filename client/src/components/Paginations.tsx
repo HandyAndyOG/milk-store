@@ -1,12 +1,10 @@
 import React, { useContext, useEffect } from 'react'
 import { MilkContext } from '../context/MilkContext';
-import { BiLeftArrow, BiRightArrow } from 'react-icons/bi';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 
 const Paginations = () => {
   const { pages, currentPage, setCurrentPage } = useContext(MilkContext)
-  const paginationArray = Array.from({length: pages}, (_, i) => i + 1)
-  console.log(currentPage)
 
   const prevPage = () => {
     if(currentPage > 1) {
@@ -16,14 +14,19 @@ const Paginations = () => {
   }
 
   const nextPage = () => {
-    if (currentPage < paginationArray.length) {
+    if (currentPage < pages) {
         setCurrentPage(currentPage + 1)
     }
     return
   }
+  
   return (
     <div>
-        <button><BiLeftArrow onClick={prevPage}/></button>{paginationArray.map((n: number) => <button onClick={() => setCurrentPage(n)} key={n}>{n}</button>)}<button onClick={nextPage}><BiRightArrow/></button>
+        <button onClick={prevPage}><IoIosArrowBack/></button>
+        <button>{currentPage}</button>
+        <span>of</span>
+        <button onClick={() => setCurrentPage(pages)}>{pages}</button>
+        <button onClick={nextPage}><IoIosArrowForward/></button>
     </div>
   )
 }
