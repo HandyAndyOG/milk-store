@@ -1,6 +1,7 @@
 import { MilkContext } from '../context/MilkContext';
 import React, { useContext, useEffect } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai';
+import Filter from './Filter'
 
 
 
@@ -29,7 +30,7 @@ const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     <section className='flex flex-col items-center'>
         <div className='flex flex-row justify-between'>
             <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e)} className='w-72' placeholder='Search'/>
-            <p>Filter</p>
+            <Filter />
         </div>
         <div className='flex flex-col'>
             <h2>{productCount} Products</h2>

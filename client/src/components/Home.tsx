@@ -4,7 +4,7 @@ import Card from './Card';
 import Nav from './Nav'
 
 const Home = () => {
-    const { setAllMilk, setPages, currentPage, setProductCount, search } = useContext(MilkContext)
+    const { setAllMilk, setPages, currentPage, setProductCount, search, setAllData } = useContext(MilkContext)
 
     useEffect(() =>{
         const fetchMilk = async () => {
@@ -12,9 +12,10 @@ const Home = () => {
                 try {
                     const data = await fetch(`http://localhost:8080/api/${currentPage}`);
                     const response = await data.json();
-                    setAllMilk(response[0].results)
-                    setPages(response[0].count/9)
-                    setProductCount(response[0].count)
+                    setAllMilk(response.data[0].results)
+                    setPages(response.data[0].count/9)
+                    setProductCount(response.data[0].count)
+                    setAllData(response.wholeData[0].results)
                 } catch (err) {
                     console.log(err)
                 }

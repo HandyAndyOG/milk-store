@@ -4,6 +4,8 @@ import { States, Milk, Cart } from '../Types/types'
 export const MilkContext = createContext<States>({
     allMilk: [],
     setAllMilk: () => {},
+    allData: [],
+    setAllData: () => {},
     pages: 99,
     setPages: () => {},
     currentPage: 1,
@@ -22,6 +24,7 @@ export const MilkContext = createContext<States>({
 
 const MilkProvider: React.FC<{ children: React.ReactElement }> = ({ children }) => {
     const [ allMilk, setAllMilk ] = useState<Milk[]>([])
+    const [ allData, setAllData ] = useState<Milk[]>([])
     const [pages, setPages] = useState<number>(99)
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [productCount, setProductCount] = useState<number | null>(null)
@@ -31,7 +34,7 @@ const MilkProvider: React.FC<{ children: React.ReactElement }> = ({ children }) 
     const [search, setSearch] = useState<string | undefined>()
 
     return (
-        <MilkContext.Provider value = {{ allMilk, setAllMilk, pages, setPages, currentPage, setCurrentPage, productCount, setProductCount, volume, setVolume, clientId, setClientId, cart, setCart, search, setSearch }}>
+        <MilkContext.Provider value = {{ allMilk, setAllMilk, pages, setPages, currentPage, setCurrentPage, productCount, setProductCount, volume, setVolume, clientId, setClientId, cart, setCart, search, setSearch, allData, setAllData }}>
             { children }
         </MilkContext.Provider>
     )

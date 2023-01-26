@@ -27,23 +27,17 @@ MongoClient.connect(uri, { useUnifiedTopology: true }, (err: string, client: any
   }
   const db = client.db(process.env.DB_NAME);
   app.get('/api/:page', async (req: Request, res: Response) => {
-    if (req.params.page) {
-      let startOfArray;
-      if(Number(req.params.page) === 1) {
-        startOfArray = (Number(req.params.page) * 10) - 9
-      } else {
-        startOfArray = (Number(req.params.page) * 10) - 9
-      }
+      let startOfArray = (Number(req.params.page) * 10) - 9
         try {
           const data = await db.collection(process.env.COLLECTION_NAME).find({}).project({results: { $slice: [startOfArray-Number(req.params.page) , 9] }}).toArray()
-          return res.status(200).send(data)
+          const wholeData = await db.collection(process.env.COLLECTION_NAME).find({}).toArray()
+          return res.status(200).send({data, wholeData})
         } catch (err) {
           return res.status(404).send('Error fetching the data')
         }
-    }
-    return res.status(404).send('Error fetching the page')
   });
 });
+
 MongoClient.connect(uri, { useUnifiedTopology: true }, (err: string, client: any) => {
   if (err) {
     console.error(err);

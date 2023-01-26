@@ -17,6 +17,8 @@ export interface Cart {
 export interface States {
     allMilk: Milk[]
     setAllMilk: React.Dispatch<React.SetStateAction<Milk[]>>
+    allData: Milk[]
+    setAllData: React.Dispatch<React.SetStateAction<Milk[]>>
     cart: Cart[]
     setCart: React.Dispatch<React.SetStateAction<Cart[]>>
     pages: number
