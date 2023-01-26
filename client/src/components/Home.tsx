@@ -1,31 +1,37 @@
 import React, { useContext, useEffect } from 'react'
 import { MilkContext } from '../context/MilkContext';
 import Card from './Card';
+import Nav from './Nav'
 
 const Home = () => {
-    const { setAllMilk, setPages, currentPage, setProductCount  } = useContext(MilkContext)
+    const { setAllMilk, setPages, currentPage, setProductCount, search } = useContext(MilkContext)
 
     useEffect(() =>{
         const fetchMilk = async () => {
-            try {
-                const data = await fetch(`http://localhost:8080/api/${currentPage}`);
+            if (!search) {
+                try {
+                    const data = await fetch(`http://localhost:8080/api/${currentPage}`);
+                    const response = await data.json();
+                    setAllMilk(response[0].results)
+                    setPages(response[0].count/9)
+                    setProductCount(response[0].count)
+                } catch (err) {
+                    console.log(err)
+                }
+            } else {
+                const data = await fetch(`http://localhost:8080/api/search/${search}/${currentPage}`);
                 const response = await data.json();
-                setAllMilk(response[0].results)
-                setPages(response[0].count/9)
+                setAllMilk(response[1].results)
+                setPages(Math.ceil(response[0].count/9))
                 setProductCount(response[0].count)
-            } catch (err) {
-                console.log(err)
             }
         }
         fetchMilk();
-    },[currentPage])
-
+    },[currentPage, search])
 
   return (
     <>
-        <nav className='w-screen h-20 flex justify-center items-center my-4 font-mono'>
-            <h1 className='text-5xl text-red-300'>THE MILK STORE</h1>
-        </nav>
+        <Nav/>
         <Card />
     </>
   )

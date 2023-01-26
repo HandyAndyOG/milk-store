@@ -2,6 +2,8 @@ import express from 'express';
 import { Request, Response, Application } from 'express';
 const MongoClient = require('mongodb').MongoClient;
 import * as dotenv from 'dotenv'
+import { v4 as uuidv4 } from 'uuid';
+
 dotenv.config();
 const app: Application = express();
 const bp = require('body-parser')
@@ -18,13 +20,6 @@ app.use(function(_, res: Response, next) {
   next();
 });
 
-// interface Data {
-//   _id: string;
-//   count: number;
-//   results: string[];
-// }
-
-
 MongoClient.connect(uri, { useUnifiedTopology: true }, (err: string, client: any) => {
   if (err) {
     console.error(err);
@@ -40,9 +35,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true }, (err: string, client: any
         startOfArray = (Number(req.params.page) * 10) - 9
       }
         try {
-          console.log(startOfArray)
           const data = await db.collection(process.env.COLLECTION_NAME).find({}).project({results: { $slice: [startOfArray-Number(req.params.page) , 9] }}).toArray()
-          console.log(data)
           return res.status(200).send(data)
         } catch (err) {
           return res.status(404).send('Error fetching the data')
@@ -51,6 +44,44 @@ MongoClient.connect(uri, { useUnifiedTopology: true }, (err: string, client: any
     return res.status(404).send('Error fetching the page')
   });
 });
+MongoClient.connect(uri, { useUnifiedTopology: true }, (err: string, client: any) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const db = client.db(process.env.DB_NAME);
+
+  app.get('/api/search/:search/:page', async (req: Request, res: Response) => {
+    const search:any = req.params.search
+    const page: any = req.params.page
+    const regex = new RegExp(search, 'gmi')
+
+    let startOfArray = (Number(page) * 10) - 9
+        try {
+          const data = await db.collection(process.env.COLLECTION_NAME).find({}).toArray()
+          const filtered = data[0].results.filter((item: any) => item.name.match(regex))
+          const filteredCount = filtered.length
+          const arrayOfData = filtered.slice(startOfArray - Number(page), startOfArray + 8)
+          const newData = [{count: filteredCount}, {results: arrayOfData}]
+
+          return res.status(200).send(newData)
+        } catch (err) {
+          return res.status(404).send('Error fetching the data')
+        }
+  });
+});
+
+
+
+
+app.get('/api/cart', async (_, res: Response) => {
+  const clientId = uuidv4();
+  if(clientId) {
+    return res.status(200).send({clientId})
+  }
+  return res.status(404).send('Error creating id')
+});
+
 
 // app.post('/api/', async(req: Request, res: Response) => {
 
