@@ -2,9 +2,9 @@
 
 ## Install
 ###
-cd into client and run npm i
+    cd into client and run npm i
 ###
-cd into server and run npm i
+    cd into server and run npm i
 
 ## Start
 ### Step 1:
