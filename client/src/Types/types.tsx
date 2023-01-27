@@ -39,4 +39,6 @@ export interface States {
     setSearch: React.Dispatch<React.SetStateAction<string | undefined>>
     filter: string[]
     setFilter: React.Dispatch<React.SetStateAction<string[]>>
+    deletedMilk: boolean
+    setDeletedMilk: React.Dispatch<React.SetStateAction<boolean>>
 }

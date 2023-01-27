@@ -21,7 +21,9 @@ export const MilkContext = createContext<States>({
     search: '',
     setSearch: () => {},
     filter: [],
-    setFilter: () => {}
+    setFilter: () => {},
+    deletedMilk: false,
+    setDeletedMilk: () => {}
 })
 
 const MilkProvider: React.FC<{ children: React.ReactElement }> = ({ children }) => {
@@ -35,9 +37,10 @@ const MilkProvider: React.FC<{ children: React.ReactElement }> = ({ children }) 
     const [cart, setCart] = useState<Cart[]>([])
     const [search, setSearch] = useState<string | undefined>()
     const [filter, setFilter] = useState<string[]>([])
+    const [deletedMilk, setDeletedMilk] = useState<boolean>(false)
 
     return (
-        <MilkContext.Provider value = {{ allMilk, setAllMilk, pages, setPages, currentPage, setCurrentPage, productCount, setProductCount, volume, setVolume, clientId, setClientId, cart, setCart, search, setSearch, allData, setAllData, filter, setFilter }}>
+        <MilkContext.Provider value = {{ allMilk, setAllMilk, pages, setPages, currentPage, setCurrentPage, productCount, setProductCount, volume, setVolume, clientId, setClientId, cart, setCart, search, setSearch, allData, setAllData, filter, setFilter, deletedMilk, setDeletedMilk}}>
             { children }
         </MilkContext.Provider>
     )

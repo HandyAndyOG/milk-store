@@ -6,7 +6,6 @@ import Milk from '../assets/media/milk.png'
 import { IoIosArrowBack } from 'react-icons/io';
 import { AiOutlineShoppingCart } from 'react-icons/ai';
 import Nav from './Nav'
-import { v4 as uuidv4 } from 'uuid';
 
 
 const Product = () => {
@@ -15,21 +14,17 @@ const Product = () => {
     const navigate = useNavigate()
     const milk = id ? allMilk.find((milk) => milk.id === id) : null;
     const handleBack = () => {
+        setVolume(0)
         navigate('/')
     }
-    console.log(cart, 'here is cart')
 
-    const addCart = (milkName: string, milkType: string) => {
+    const addCart = (milkName: string, milkType: string, milkId: string) => {
         if(cart.find((data) => data.userId === clientId)) {
-            console.log('same ID')
-            // setCart([...cart, 
-            //     cart : [{
-            //         milk_name: milkName,
-            //         milk_type: milkType,
-            //         quantity: volume,
-            //         milk_id: uuidv4()
-            //     }]
-            // ])
+            cart.map((data) => data.cart.push({milk_name: milkName,
+                milk_type: milkType,
+                quantity: volume,
+                milk_id: milkId}))
+
         } else {
             setCart([{
                 userId: clientId,
@@ -37,13 +32,12 @@ const Product = () => {
                     milk_name: milkName,
                     milk_type: milkType,
                     quantity: volume,
-                    milk_id: uuidv4()
+                    milk_id: milkId
                 }]
             }])
-            console.log('not same ID')
         }
-        setVolume(0)
     }
+
     const handleVolume = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setVolume(Number(e.target.value))
         if(!clientId) {
@@ -53,7 +47,7 @@ const Product = () => {
         }
     }
     const handleCart = () => {
-
+        setVolume(0)
         navigate(`/Cart/${clientId}`)
     }
 
@@ -78,7 +72,7 @@ const Product = () => {
                         <output htmlFor="volume" id="volumeValue">
                             {volume}
                         </output>
-                        {volume > 0 ? <div><button onClick={() => addCart(milk.name, milk.type)}>Add to Cart</button><AiOutlineShoppingCart onClick={handleCart}/></div> : ''}
+                        {volume > 0 ? <div><button onClick={() => addCart(milk.name, milk.type, milk.id)}>Add to Cart</button><AiOutlineShoppingCart onClick={handleCart}/></div> : ''}
                     </div> : 'Cannot find the Milk'}
                 </article>
             </div>

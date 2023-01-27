@@ -4,6 +4,7 @@ import Paginations from './Paginations';
 import { useNavigate } from 'react-router-dom';
 import Milk from '../assets/media/milk.png'
 import Search from '../components/Search'
+import { v4 as uuidv4 } from 'uuid';
 
 const Card = () => {
   const { allMilk } = useContext(MilkContext)

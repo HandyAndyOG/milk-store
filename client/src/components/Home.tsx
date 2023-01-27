@@ -4,7 +4,7 @@ import Card from './Card';
 import Nav from './Nav'
 
 const Home = () => {
-    const { allMilk ,setAllMilk, setPages, currentPage, setProductCount, search, setAllData, filter } = useContext(MilkContext)
+    const { allMilk ,setAllMilk, setPages, currentPage, setProductCount, search, setAllData, filter, deletedMilk, setDeletedMilk } = useContext(MilkContext)
 
     useEffect(() =>{
         const fetchMilk = async () => {
@@ -34,9 +34,9 @@ const Home = () => {
             }
         }
         fetchMilk();
-    },[currentPage, search, filter])
 
-    console.log(allMilk)
+    },[currentPage, search, filter, deletedMilk ])
+
   return (
     <>
         <Nav/>
