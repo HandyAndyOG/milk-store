@@ -55,9 +55,36 @@ MongoClient.connect(uri, { useUnifiedTopology: true }, (err: string, client: any
           const data = await db.collection(process.env.COLLECTION_NAME).find({}).toArray()
           const filtered = data[0].results.filter((item: any) => item.name.match(regex))
           const filteredCount = filtered.length
-          const arrayOfData = filtered.slice(startOfArray - Number(page), startOfArray + 8)
+          const arrayOfData = filtered.slice(startOfArray - Number(page), startOfArray - Number(page) + 9)
           const newData = [{count: filteredCount}, {results: arrayOfData}]
 
+          return res.status(200).send(newData)
+        } catch (err) {
+          return res.status(404).send('Error fetching the data')
+        }
+  });
+});
+
+MongoClient.connect(uri, { useUnifiedTopology: true }, (err: string, client: any) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const db = client.db(process.env.DB_NAME);
+
+  app.get('/api/filter/:filter/:page', async (req: Request, res: Response) => {
+    const filter:any = req.params.filter
+    let new_string = '(' + filter.replace(/milk|,|\s/g, (match: string) => match === 'milk' ? "" : match === ',' ? "|" : "") + ')';
+    const page: any = req.params.page
+    const regex = new RegExp(new_string, 'gmi')
+
+    let startOfArray = (Number(page) * 10) - 9
+        try {
+          const data = await db.collection(process.env.COLLECTION_NAME).find({}).toArray()
+          const filtered = data[0].results.filter((item: any) => item.type.match(regex))
+          const filteredCount = filtered.length
+          const arrayOfData = filtered.slice(startOfArray - Number(page), startOfArray - Number(page) + 9)
+          const newData = [{count: filteredCount}, {results: arrayOfData}]
           return res.status(200).send(newData)
         } catch (err) {
           return res.status(404).send('Error fetching the data')

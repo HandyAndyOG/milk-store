@@ -1,17 +1,31 @@
 import { MilkContext } from '../context/MilkContext';
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
+import Select, { MultiValue } from 'react-select';
+import { Options } from '../Types/types'
+
 
 const Filter = () => {
-const { allData } = useContext(MilkContext)
+const { allData, filter, setFilter } = useContext(MilkContext)
 const milkTypes = Array.from(new Set(allData.map(item => item.type)))
+const options: Options[] = milkTypes.map((milk) => {
+    return {
+        value: milk,
+        label: milk
+    }
+})
 
-const handleFilter = () => {
-
+const handleFilter = (selectedOptions: MultiValue<Options>) => {
+    setFilter(selectedOptions.map(options => options.value))
 }
+
   return (
-    <select onChange={handleFilter}>
-        {milkTypes.map((milk) => (<option value={milk}>{milk}<input type='checkbox' value={milk} onChange={handleFilter} /></option>))}
-    </select>
+    <Select 
+        isMulti
+        options={options}
+        onChange={handleFilter}
+        closeMenuOnSelect={false}
+        components={{ DropdownIndicator: () => null }}
+    />
   )
 }
 

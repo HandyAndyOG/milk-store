@@ -14,6 +14,10 @@ export interface Cart {
         userId: string | undefined
         cart : UserCart[]
 }
+export interface Options {
+    value: string;
+    label: string
+}
 export interface States {
     allMilk: Milk[]
     setAllMilk: React.Dispatch<React.SetStateAction<Milk[]>>
@@ -33,4 +37,6 @@ export interface States {
     setClientId: React.Dispatch<React.SetStateAction<string | undefined>>
     search: string | undefined
     setSearch: React.Dispatch<React.SetStateAction<string | undefined>>
+    filter: string[]
+    setFilter: React.Dispatch<React.SetStateAction<string[]>>
 }

@@ -4,11 +4,11 @@ import Card from './Card';
 import Nav from './Nav'
 
 const Home = () => {
-    const { setAllMilk, setPages, currentPage, setProductCount, search, setAllData } = useContext(MilkContext)
+    const { allMilk ,setAllMilk, setPages, currentPage, setProductCount, search, setAllData, filter } = useContext(MilkContext)
 
     useEffect(() =>{
         const fetchMilk = async () => {
-            if (!search) {
+            if (!search && filter.length === 0) {
                 try {
                     const data = await fetch(`http://localhost:8080/api/${currentPage}`);
                     const response = await data.json();
@@ -19,6 +19,12 @@ const Home = () => {
                 } catch (err) {
                     console.log(err)
                 }
+            } else if(filter.length !== 0) {
+                const data = await fetch(`http://localhost:8080/api/filter/${filter.map((milk) => milk)}/${currentPage}`);
+                const response = await data.json();
+                setAllMilk(response[1].results)
+                setPages(Math.ceil(response[0].count/9))
+                setProductCount(response[0].count)
             } else {
                 const data = await fetch(`http://localhost:8080/api/search/${search}/${currentPage}`);
                 const response = await data.json();
@@ -28,8 +34,9 @@ const Home = () => {
             }
         }
         fetchMilk();
-    },[currentPage, search])
+    },[currentPage, search, filter])
 
+    console.log(allMilk)
   return (
     <>
         <Nav/>

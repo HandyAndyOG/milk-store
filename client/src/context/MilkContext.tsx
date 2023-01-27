@@ -1,5 +1,5 @@
 import React, { createContext, useState } from 'react'
-import { States, Milk, Cart } from '../Types/types'
+import { States, Milk, Cart, Options } from '../Types/types'
 
 export const MilkContext = createContext<States>({
     allMilk: [],
@@ -19,7 +19,9 @@ export const MilkContext = createContext<States>({
     cart: [], 
     setCart: () => {},
     search: '',
-    setSearch: () => {}
+    setSearch: () => {},
+    filter: [],
+    setFilter: () => {}
 })
 
 const MilkProvider: React.FC<{ children: React.ReactElement }> = ({ children }) => {
@@ -32,9 +34,10 @@ const MilkProvider: React.FC<{ children: React.ReactElement }> = ({ children }) 
     const [clientId, setClientId] = useState<string | undefined>()
     const [cart, setCart] = useState<Cart[]>([])
     const [search, setSearch] = useState<string | undefined>()
+    const [filter, setFilter] = useState<string[]>([])
 
     return (
-        <MilkContext.Provider value = {{ allMilk, setAllMilk, pages, setPages, currentPage, setCurrentPage, productCount, setProductCount, volume, setVolume, clientId, setClientId, cart, setCart, search, setSearch, allData, setAllData }}>
+        <MilkContext.Provider value = {{ allMilk, setAllMilk, pages, setPages, currentPage, setCurrentPage, productCount, setProductCount, volume, setVolume, clientId, setClientId, cart, setCart, search, setSearch, allData, setAllData, filter, setFilter }}>
             { children }
         </MilkContext.Provider>
     )
